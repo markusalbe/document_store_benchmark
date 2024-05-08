@@ -1,0 +1,11 @@
+{
+    "dataDir": "/home/marcos.albe/CS0042248/benchmark/data",
+    "schema": "test",
+    "collection": "companies",
+    "connectionOpts": {
+        "host": "localhost",
+        "port": 26412,
+        "user": "msandbox",
+        "password": "msandbox"
+    }
+}

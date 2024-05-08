@@ -1,0 +1,60 @@
+{
+    "_id": "$oid",
+    "firm": "$company",
+    "valuation": { "$integer": { "min": 500000, "max": 10000000 } },	
+    "crunchBaseRank": { "$integer": { "min": 1, "max": 10000000 } },
+    "founded": {
+      "$date": {
+        "min": "1970-01-01",
+        "max": "2012-12-31",
+        "string": "true"
+      }
+    },
+    "foundedBy": {
+      "$array": {
+        "of": "$name",
+        "number": {
+          "$integer": {
+            "min": 1,
+            "max": 3
+          }
+        }
+      }
+    },
+    "CEO": "$name",
+    "location": {
+      "$join": {
+        "array": [
+          "$address",
+          "$city",
+          {
+            "$country": {
+              "full": "true"
+            }
+          }
+        ],
+        "sep": ","
+      }
+    },
+    "employees": {
+      "$array": {
+        "of": {
+          "name": "$name",
+          "position": {
+            "$profession": {
+              "rank": "true"
+            }
+          },
+          "age": "$age"
+        },
+        "number": {
+          "$integer": {
+              "min": 5,
+              "max": 10
+          }
+        }
+      }
+    }
+  }
+  
+  

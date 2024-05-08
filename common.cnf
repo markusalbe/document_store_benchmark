@@ -1,0 +1,63 @@
+[mysqld]
+innodb_buffer_pool_size            = 4G
+innodb_buffer_pool_instances       = 4
+innodb_numa_interleave             = 1
+innodb_redo_log_capacity           = 8G
+innodb_log_buffer_size             = 64M
+innodb_flush_log_at_trx_commit     = 0
+innodb_flush_method                = O_DIRECT
+innodb_flush_neighbors             = 0
+innodb_adaptive_flushing_lwm       = 45
+innodb_io_capacity                 = 200
+innodb_io_capacity_max             = 1200
+# innodb_monitor_enable              = all
+innodb_fast_shutdown               = 2
+transaction_isolation              = READ-COMMITTED
+max_connections                    = 2000
+max_allowed_packet                 = 1G
+thread_cache_size                  = 128
+back_log                           = 2048
+core-file
+innodb_buffer_pool_in_core_file    = 0
+table_open_cache                   = 4096
+table_open_cache_instances         = 8
+table_definition_cache             = 1024
+open_files_limit                   = 65536
+tmp_table_size                     = 32M
+max_heap_table_size                = 32M
+local_infile                       = OFF
+symbolic_links                     = 0
+log_bin                            = mysql-bin
+server_id                          = 1234
+gtid_mode                          = ON
+enforce_gtid_consistency
+expire_logs_days                   = 14
+master_info_repository             = TABLE
+relay_log_info_repository          = TABLE
+relay_log_recovery                 = ON
+slave_parallel_workers             = 6
+slave_max_allowed_packet           = 1G
+slave_pending_jobs_size_max        = 512M
+slave_preserve_commit_order        = ON
+slave_parallel_type                = LOGICAL_CLOCK
+transaction_write_set_extraction   = XXHASH64
+group_replication_auto_increment_increment = 1
+binlog_transaction_dependency_tracking     = WRITESET
+binlog_format                      = ROW
+binlog_row_value_options           = PARTIAL_JSON
+binlog_row_image                   = MINIMAL
+binlog_cache_size                  = 32M
+sync_binlog                        = 1
+range_optimizer_max_mem_size       = 0
+
+skip_name_resolve                  = 1
+
+
+slow_query_log                   = 1
+long_query_time                  = 0
+log_slow_rate_limit              = 3
+log_slow_rate_type               = query
+
+
+# sync_binlog                      = 0
+# innodb_flush_log_at_trx_commit   = 0

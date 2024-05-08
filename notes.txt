@@ -1,0 +1,5 @@
+[PROD-SER] [marcos.albe@bm-support01 benchmark]$ time rm -rf data/*
+
+real    295m18.251s
+user    0m45.498s
+sys     9m30.291s
