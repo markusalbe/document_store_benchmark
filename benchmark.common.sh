@@ -3,19 +3,11 @@
 export WORKDIR="${HOME}/CS0042248/benchmark";
 export DATADIR="${WORKDIR}/data";
 export JSON="${DATADIR}/companies.json";
-export O_DIRECT_OPEN_SO="${HOME}/CS0042248/shim_open.so";
 
 export MYSQL_SANDBOX_DIR="${HOME}/sandboxes/group_msb_8_0_33";
 export MYSQL="${MYSQL_SANDBOX_DIR}/n1 -A --max-allowed-packet=1073741824 ";
 export MYSQL_ALL_NODES="${MYSQL_SANDBOX_DIR}/use_all";
 export MYSQLSH="/usr/bin/mysqlsh";
-
-export MARIADB_SANDBOX_DIR="${HOME}/sandboxes/mariadb_10";
-export MYSQL="${MYSQL_SANDBOX_DIR}/n1 -A --max-allowed-packet=1073741824 ";
-export MYSQL_ALL_NODES="${MYSQL_SANDBOX_DIR}/use_all";
-export MYSQLSH="/usr/bin/mysqlsh";
-
-
 
 export MONGODB_SANDBOX_DIR="${HOME}/sandboxes/rs_psmdb_5_0_22";
 export MONGODB_BIN_DIR="/home/marcos.albe/opt/mongodb/5.0.22/bin/";
