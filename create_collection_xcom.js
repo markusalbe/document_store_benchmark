@@ -1,5 +1,5 @@
 require('mysqlx');
-var config = JSON.parse(os.loadTextFile("/home/marcos.albe/CS0042248/js_test_config.json"));
+var config = JSON.parse(os.loadTextFile("js_test_config.json"));
 var session = mysqlx.getSession(config.connectionOpts);
 
 println("Creating collection...");

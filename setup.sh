@@ -94,6 +94,27 @@ function setup_mongodb_sandbox() {
     mlaunch init --replicaset --nodes=3 --binarypath ${HOME}/opt/mongodb/5.0.22/bin/ --dir ${MONGODB_SANDBOX_DIR};
 }
 
+function generate_js_test_config() {
+
+    cat << EOT > "$(dirname $0)/js_test_config.json"
+{
+    "dataDir": "${WORKDIR}/data",
+    "schema": "test",
+    "collection": "companies",
+    "connectionOpts": {
+        "host": "localhost",
+        "port": $(${MYSQL_SANDBOX_DIR}/node1/metadata port),
+        "user": "msandbox",
+        "password": "msandbox"
+    }
+}
+
+EOT
+
+}
+
+
+
 fix_yum_repos;
 install_linux_tooling;
 install_dbdeployer;
@@ -103,3 +124,4 @@ install_mgenerate;
 install_mysqlsh;
 setup_group_replication_sandbox;
 setup_mongodb_sandbox;
+generate_js_test_config
