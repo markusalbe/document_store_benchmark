@@ -49,19 +49,19 @@ function stop_test_env() {
         "mysql" | "xcom")  ${MYSQL_SANDBOX_DIR}/stop_all >> "${WORKDIR}/test_env.log" 2>&1 ;  ;;
         "mongodb")
             [[ -f "${MONGODB_SANDBOX_DIR}/.mlaunch_startup" ]] && mlaunch kill --signal 9 --dir="${MONGODB_SANDBOX_DIR}";
-            killall -9 mongod.bin || echo "No more mongod.bin running"
+            killall -9 mongod || echo "No more mongod running"
             ;;
     esac;
 }
 
 function wait_for_mongodb_shutdown() {
-    while [[ $(ps -C mongod.bin -opid h |wc -l) > 0 ]]; do { sleep 1; echo -n "."; } done;
+    while [[ $(ps -C mongod -opid h |wc -l) > 0 ]]; do { sleep 1; echo -n "."; } done;
 }
 
 function recreate_mongodb_test_env() {
     # [[ -f "${MONGODB_SANDBOX_DIR}/.mlaunch_startup" ]] && mlaunch kill --signal 9 --dir="${MONGODB_SANDBOX_DIR}";
     echo -n "Terminating mongodb instances...";
-    killall -9 mongod.bin || echo "No mongod.bin running";
+    killall -9 mongod || echo "No mongod running";
     rm -rf "${MONGODB_SANDBOX_DIR}/replset"  "${MONGODB_SANDBOX_DIR}/.mlaunch_startup";
     wait_for_mongodb_shutdown;
     echo "";
@@ -177,4 +177,91 @@ function extract_latest_for_plotly() {
 }
 
 
+# Central dispatcher for read-write test workers
+function run_test() {
+    local protocol=${1};
+    local test_type=${2};
+    local test_mode=${3};
+    local threads=${4};
+    local total_rows=${5};
+    local batch_size=${6};
+    local commit_frequency=${7:-0};
+
+    local test_id="$(get_test_id ${protocol} ${test_type} ${test_mode} ${threads} ${total_rows} ${batch_size} ${commit_frequency})";
+    local raw_chunks_datadir=$(get_raw_chunks_datadir "${batch_size}");
+    local lookup_chunks_datadir=$(get_lookup_chunks_datadir "${protocol}" "${test_mode}" "${batch_size}");
+
+    local t0=$(date +%s.%N);
+    save_db_stats "${protocol}" "${test_id}" "t0";
+    
+    for thread in $(seq 1 ${threads}); do {
+        echo_green "[$(ts)] Starting thread ${thread}/${threads} (${test_id})";
+        client_params=$(jq -c -n \
+            --arg testType "${test_type}" \
+            --arg testMode "${test_mode}" \
+            --arg testId "${test_id}" \
+            --arg threadId "${thread}" \
+            --arg batchCount "$((total_rows/threads/batch_size))" \
+            --arg commitFrequency "${commit_frequency}" \
+            --arg rawChunksDataDir "${raw_chunks_datadir}" \
+            --arg lookupChunksDataDir "${lookup_chunks_datadir}" '$ARGS.named');
+
+        case "${protocol}" in
+            "mysql")   client_thread_mysql "${test_type}" "${test_mode}" "${test_id}" "${thread}" "$((total_rows/threads/batch_size))" "${commit_frequency}" "${raw_chunks_datadir}" "${lookup_chunks_datadir}" &    ;;
+            "xcom")    ${MYSQLSH} -f client_thread_xcom.js "${client_params}" &  ;;
+            "mongodb") TEST_PARAMS="${client_params}" ${MONGOSH} -f client_thread_mongodb.js &  ;;
+        esac;
+    } done;
+    wait;
+    local t1=$(date +%s.%N);
+    
+    save_results "${test_id}" "${t0}" "${t1}";
+
+    save_db_stats "${protocol}" "${test_id}" "t1";
+    show_test_db_stats "${protocol}" "${test_id}";
+
+}
+
+function run_loops() {
+    local arr_protocols=${1};
+    local arr_threads=${2};
+    local arr_total_rows=${3}
+    local arr_batch_sizes=${4};
+    local arr_commit_frequencies=${5};
+    local arr_update_test_modes=${6};
+    local arr_read_test_modes=${7};
+    local runs=${8:-1};
+
+    # echo_red "[$(ts)] Dropping VFS caches..."   >> "${TEST_LOG}" 2>&1;
+    # echo 3 | sudo tee /proc/sys/vm/drop_caches > /dev/null;
+
+    for r in $(seq 1 ${runs}); do {
+        echo_red "[$(ts)] Starting run #${r} for test ${TEST_UUID}" >> "${TEST_LOG}" 2>&1;
+        for total_rows in ${arr_total_rows[@]}; do {
+            for protocol in ${arr_protocols[@]}; do {
+                for threads in ${arr_threads[@]}; do {
+                    for batch_size in ${arr_batch_sizes[@]}; do {
+
+                        recreate_test_env "$(get_test_id ${protocol} "insert" ${test_mode} ${threads} ${total_rows} ${batch_size} 0)" "${protocol}" >> "${TEST_LOG}" 2>&1;
+
+                        for commit_frequency in ${arr_commit_frequencies[@]}; do {
+                            run_test "${protocol}" "insert" "ordered" ${threads} ${total_rows} ${batch_size} ${commit_frequency}  >> "${TEST_LOG}" 2>&1;
+                        } done;
+
+                        for commit_frequency in ${arr_commit_frequencies[@]}; do {
+                            for update_test_mode in ${arr_update_test_modes[@]}; do {
+                                run_test "${protocol}" "update" "${update_test_mode}" ${threads} ${total_rows} ${batch_size} ${commit_frequency}  >> "${TEST_LOG}" 2>&1;
+                            } done;
+                        } done;
+
+                        for read_test_mode in ${arr_read_test_modes[@]}; do {
+                            run_test  "${protocol}" "read" "${read_test_mode}" ${threads} ${total_rows} ${batch_size} 0  >> "${TEST_LOG}" 2>&1;
+                        } done
+
+                    } done;
+                } done;
+            } done;
+        } done;
+    } done
+}
 

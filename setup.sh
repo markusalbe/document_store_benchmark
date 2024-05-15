@@ -1,7 +1,7 @@
 #!/bin/bash
 
 source "$(dirname $(readlink -f $0))/benchmark.env.sh";
-source "${BASENAME}/setup.common.sh";
+source "${BASEDIR}/setup.common.sh";
 
 fix_yum_repos;
 install_linux_tooling;
