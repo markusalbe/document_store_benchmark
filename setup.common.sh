@@ -106,7 +106,7 @@ function generate_js_test_config() {
     "collection": "companies",
     "connectionOpts": {
         "host": "localhost",
-        "port": $(${MYSQL_SANDBOX_DIR}/node1/metadata port),
+        "port": $(${MYSQL_SANDBOX_DIR}/node1/metadata xport),
         "user": "msandbox",
         "password": "msandbox"
     }
