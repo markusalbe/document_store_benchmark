@@ -30,7 +30,7 @@ function install_mlaunch() {
 function install_mongo_clients() {
     mkdir /opt/mongosh;
     cd $_;
-    wget https://downloads.mongodb.com/compass/mongosh-2.1.1-linux-x64.tgz;
+    wget -c https://downloads.mongodb.com/compass/mongosh-2.1.1-linux-x64.tgz;
     tar xzf mongosh-2.1.1-linux-x64.tgz;
     mv mongosh-2.1.1-linux-x64 2.1.1;
 
@@ -59,8 +59,9 @@ function setup_group_replication_sandbox() {
 
     mkdir -p ${HOME}/opt/mysql;
     cd $_;
-    wget https://downloads.percona.com/downloads/Percona-Server-8.0/Percona-Server-8.0.33-25/binary/tarball/Percona-Server-8.0.33-25-Linux.x86_64.glibc2.17.tar.gz;
+    wget -c https://downloads.percona.com/downloads/Percona-Server-8.0/Percona-Server-8.0.33-25/binary/tarball/Percona-Server-8.0.33-25-Linux.x86_64.glibc2.17.tar.gz;
     tar xzf Percona-Server-8.0.33-25-Linux.x86_64.glibc2.17.tar.gz;
+
     mv Percona-Server-8.0.33-25-Linux.x86_64.glibc2.17 8.0.33;
     dbdeployer deploy replication --topology=group ./8.0.33;
 
@@ -69,9 +70,9 @@ function setup_group_replication_sandbox() {
     cp -v $(dirname $0)/common.cnf ${MYSQL_SANDBOX_DIR}/;
     cnf="${MYSQL_SANDBOX_DIR}/common.cnf";
 
-    printf "%sinclude %s" '!' "${cnf}" >> ${MYSQL_SANDBOX_DIR}/node1/my.sandbox.cnf;
-    printf "%sinclude %s" '!' "${cnf}" >> ${MYSQL_SANDBOX_DIR}/node2/my.sandbox.cnf;
-    printf "%sinclude %s" '!' "${cnf}" >> ${MYSQL_SANDBOX_DIR}/node3/my.sandbox.cnf;
+    printf "%sinclude %s\n" '!' "${cnf} " >> ${MYSQL_SANDBOX_DIR}/node1/my.sandbox.cnf;
+    printf "%sinclude %s\n" '!' "${cnf} " >> ${MYSQL_SANDBOX_DIR}/node2/my.sandbox.cnf;
+    printf "%sinclude %s\n" '!' "${cnf} " >> ${MYSQL_SANDBOX_DIR}/node3/my.sandbox.cnf;
     ${MYSQL_SANDBOX_DIR}/wipe_and_restart_all;
 }
 
@@ -84,7 +85,7 @@ function setup_mongodb_sandbox() {
 
     mkdir -p ${HOME}/opt/mongodb;
     cd $_;
-    wget https://downloads.percona.com/downloads/percona-server-mongodb-5.0/percona-server-mongodb-5.0.22-19/binary/tarball/percona-server-mongodb-5.0.22-19-x86_64.glibc2.17.tar.gz;
+    wget -c https://downloads.percona.com/downloads/percona-server-mongodb-5.0/percona-server-mongodb-5.0.22-19/binary/tarball/percona-server-mongodb-5.0.22-19-x86_64.glibc2.17.tar.gz;
     tar xzf percona-server-mongodb-5.0.22-19-x86_64.glibc2.17.tar.gz;
     mv percona-server-mongodb-5.0.22-19-x86_64.glibc2.17 5.0.22;
     mkdir -p ${MONGODB_SANDBOX_DIR};
