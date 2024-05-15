@@ -6,7 +6,8 @@ function fix_yum_repos() {
 
 function install_linux_tooling() {
     yes | yum install -y epel-release sudo;
-    yes | yum install -y which less tar git wget vim screen strace gdb perf jq python3 python3-devel python3-pip libaio bash-completion nc gcc-c++ cmake fuse fuse-devel net-tools sysstat psmisc;
+    yes | yum install -y which less tar git wget vim screen strace gdb perf bc python3 python3-devel python3-pip libaio bash-completion nc gcc-c++ cmake fuse fuse-devel net-tools sysstat psmisc;
+    rpm -Uvh http://mirror.centos.org/centos/8-stream/AppStream/x86_64/os/Packages/jq-1.6-3.el8.x86_64.rpm;
 }
 
 function install_dbdeployer() {
@@ -71,7 +72,7 @@ function setup_group_replication_sandbox() {
 
     # the one we get from .env file ain't properly defined, as no sandbox was deployed when the file is sourced in this setup script.
     export MYSQL_SANDBOX_DIR=$(eval echo "$(dbdeployer defaults show | tail -n +2 | jq -r '.["sandbox-home"]')/$(dbdeployer sandboxes --latest | awk '{print $1}')" );
-    cp -v /common.cnf ${MYSQL_SANDBOX_DIR}/;
+    cp -v ${BASEDIR}/common.cnf ${MYSQL_SANDBOX_DIR}/;
     cnf="${MYSQL_SANDBOX_DIR}/common.cnf";
 
     printf "%sinclude %s\n" '!' "${cnf} " >> ${MYSQL_SANDBOX_DIR}/node1/my.sandbox.cnf;

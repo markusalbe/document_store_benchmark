@@ -9,7 +9,11 @@ source ${BASEDIR}/client_thread_mysql.sh;
 
 # create the datadir (and it's parent dir if it doesn't exist)
 [[ -d "${WORKDIR}" ]] || mkdir -pv "${WORKDIR}";
+[[ -d "${WORKDIR}/logs" ]] || mkdir -pv "${WORKDIR}/logs";
+[[ -d "${WORKDIR}/results" ]] || mkdir -pv "${WORKDIR}/results";
 [[ -d "${DATADIR}" ]] || mkdir -pv "${DATADIR}";
+
+
 
 export TEST_UUID="$(date +%F_%T|tr ':' '-')"; # unique identifier for a given execution of the benchmark
 export TEST_LOG="${WORKDIR}/logs/test.${TEST_UUID}.log";
