@@ -46,8 +46,12 @@ function install_mgenerate() {
     npm install -g mgeneratejs;
 }
 
-function install_mysqlsh() {
+function install_percona_repos() {
     yes | yum install -y https://repo.percona.com/yum/percona-release-latest.noarch.rpm;
+} 
+
+
+function install_mysqlsh() {
     percona-release setup mysql-shell;
     yes | yum install -y percona-mysql-shell; 
 }
