@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source "$(dirname $0)/benchmark.env.sh";
+
 function fix_yum_repos() {
     sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*;
     sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*;
@@ -7,7 +9,7 @@ function fix_yum_repos() {
 
 function install_linux_tooling() {
     yes | yum install -y epel-release sudo;
-    yes | yum install -y which less tar git wget vim screen strace gdb perf python3 python3-devel python3-pip libaio bash-completion nc gcc-c++ cmake fuse fuse-devel net-tools sysstat psmisc;
+    yes | yum install -y which less tar git wget vim screen strace gdb perf jq python3 python3-devel python3-pip libaio bash-completion nc gcc-c++ cmake fuse fuse-devel net-tools sysstat psmisc;
 }
 
 function install_dbdeployer() {
@@ -40,6 +42,9 @@ function install_mongo_clients() {
 }
 
 function install_mgenerate() {
+    yes | dnf module reset nodejs;
+    yes | dnf module install nodejs:12;
+
     yes | yum install -y npm;
     npm install -g mgeneratejs;
 }
@@ -55,12 +60,22 @@ function setup_group_replication_sandbox() {
         install_dbdeployer;
     } fi;
 
-    mkdir -p $HOME/opt/mysql;
+    mkdir -p ${HOME}/opt/mysql;
     cd $_;
     wget https://downloads.percona.com/downloads/Percona-Server-8.0/Percona-Server-8.0.33-25/binary/tarball/Percona-Server-8.0.33-25-Linux.x86_64.glibc2.17.tar.gz;
     tar xzf Percona-Server-8.0.33-25-Linux.x86_64.glibc2.17.tar.gz;
     mv Percona-Server-8.0.33-25-Linux.x86_64.glibc2.17 8.0.33;
-    dbdeployer deploy replication --topology=group $HOME/opt/mysql/8.0.33;
+    dbdeployer deploy replication --topology=group ./8.0.33;
+
+    # the one we get from .env file ain't properly defined, as no sandbox was deployed when the file is sourced in this setup script.
+    export MYSQL_SANDBOX_DIR=$(eval echo "$(dbdeployer defaults show | tail -n +2 | jq -r '.["sandbox-home"]')/$(dbdeployer sandboxes --latest | awk '{print $1}')" );
+    cp -v $(dirname $0)/common.cnf ${MYSQL_SANDBOX_DIR}/;
+    cnf="${MYSQL_SANDBOX_DIR}/common.cnf";
+
+    printf "%sinclude %s" '!' "${cnf}" >> ${MYSQL_SANDBOX_DIR}/node1/my.sandbox.cnf;
+    printf "%sinclude %s" '!' "${cnf}" >> ${MYSQL_SANDBOX_DIR}/node2/my.sandbox.cnf;
+    printf "%sinclude %s" '!' "${cnf}" >> ${MYSQL_SANDBOX_DIR}/node3/my.sandbox.cnf;
+    ${MYSQL_SANDBOX_DIR}/wipe_and_restart_all;
 }
 
 function setup_mongodb_sandbox() {
@@ -70,13 +85,13 @@ function setup_mongodb_sandbox() {
 
     echo "never" > /sys/kernel/mm/transparent_hugepage/enabled;    
 
-    mkdir -p $HOME/opt/mongodb;
+    mkdir -p ${HOME}/opt/mongodb;
     cd $_;
     wget https://downloads.percona.com/downloads/percona-server-mongodb-5.0/percona-server-mongodb-5.0.22-19/binary/tarball/percona-server-mongodb-5.0.22-19-x86_64.glibc2.17.tar.gz;
     tar xzf percona-server-mongodb-5.0.22-19-x86_64.glibc2.17.tar.gz;
     mv percona-server-mongodb-5.0.22-19-x86_64.glibc2.17 5.0.22;
-    mkdir -p $HOME/sandboxes/rs_psmdb_5_0_22;
-    mlaunch init --replicaset --nodes=3 --binarypath $HOME/opt/mongodb/5.0.22/bin/ --dir $HOME/sandboxes/rs_psmdb_5_0_22;
+    mkdir -p ${MONGODB_SANDBOX_DIR};
+    mlaunch init --replicaset --nodes=3 --binarypath ${HOME}/opt/mongodb/5.0.22/bin/ --dir ${MONGODB_SANDBOX_DIR};
 }
 
 fix_yum_repos;

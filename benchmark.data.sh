@@ -101,7 +101,13 @@ function extract_and_split_lookup_conditions_using_symlinks() {
 
     mkdir -vp "$(get_lookup_chunks_datadir 'mysql')/pk_lookup";
     mkdir -vp "$(get_lookup_chunks_datadir 'mysql')/sk_lookup"
+
+    mkdir -vp "$(get_lookup_chunks_datadir 'mongodb')/sk_lookup";
     mkdir -vp "$(get_lookup_chunks_datadir 'mongodb')/pk_lookup";
+
+    mkdir -vp "$(get_lookup_chunks_datadir 'xcom')/sk_lookup";
+    mkdir -vp "$(get_lookup_chunks_datadir 'xcom')/pk_lookup";
+
 
     extract_pk "mysql" "$(get_lookup_chunks_datadir 'mysql')/pk_lookup.master";   
     extract_pk "mongodb" "$(get_lookup_chunks_datadir 'mongodb')/pk_lookup.master";   

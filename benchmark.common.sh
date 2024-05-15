@@ -1,18 +1,6 @@
 #!/bin/bash
 
-export WORKDIR="${HOME}/CS0042248/benchmark";
-export DATADIR="${WORKDIR}/data";
-export JSON="${DATADIR}/companies.json";
-
-export MYSQL_SANDBOX_DIR="${HOME}/sandboxes/group_msb_8_0_33";
-export MYSQL="${MYSQL_SANDBOX_DIR}/n1 -A --max-allowed-packet=1073741824 ";
-export MYSQL_ALL_NODES="${MYSQL_SANDBOX_DIR}/use_all";
-export MYSQLSH="/usr/bin/mysqlsh";
-
-export MONGODB_SANDBOX_DIR="${HOME}/sandboxes/rs_psmdb_5_0_22";
-export MONGODB_BIN_DIR="/home/marcos.albe/opt/mongodb/5.0.22/bin/";
-export MONGOSH="/opt/mongosh/2.1.1/bin/mongosh --host=127.0.0.1 --port=27017 --quiet";
-export MONGO="/usr/bin/mongo --host=127.0.0.1 --port=27017 --quiet";
+source "$(dirname $0)/benchmark.env.sh";
 
 function ts() { date --utc --iso-8601=s; }
 function echo_red() { echo -e "\033[31m${1}\033[0m"; }
