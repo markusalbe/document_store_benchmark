@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source $(dirname $0)/benchmark.common.sh;
+source "$(dirname $(readlink -f $0))/benchmark.common.sh";
 
 while true; do {
     clear;

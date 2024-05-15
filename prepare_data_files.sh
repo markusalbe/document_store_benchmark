@@ -1,8 +1,9 @@
 #!/bin/bash
-source "$(dirname $0)/benchmark.common.sh";
-source "$(dirname $0)/benchmark.data.sh";
+source "$(dirname $(readlink -f $0))/benchmark.env.sh";
+source "${BASEDIR}/benchmark.common.sh";
+source "${BASEDIR}/benchmark.data.sh";
 
-benchmark_config=${1:-"$(dirname $0)/benchmark.conf"};
+benchmark_config=${1:-"${BASEDIR}/benchmark.mini.conf"};
 source "${benchmark_config}";
 
 overwrite=${2:-0};

@@ -71,7 +71,7 @@ function setup_group_replication_sandbox() {
 
     # the one we get from .env file ain't properly defined, as no sandbox was deployed when the file is sourced in this setup script.
     export MYSQL_SANDBOX_DIR=$(eval echo "$(dbdeployer defaults show | tail -n +2 | jq -r '.["sandbox-home"]')/$(dbdeployer sandboxes --latest | awk '{print $1}')" );
-    cp -v $(dirname $0)/common.cnf ${MYSQL_SANDBOX_DIR}/;
+    cp -v /common.cnf ${MYSQL_SANDBOX_DIR}/;
     cnf="${MYSQL_SANDBOX_DIR}/common.cnf";
 
     printf "%sinclude %s\n" '!' "${cnf} " >> ${MYSQL_SANDBOX_DIR}/node1/my.sandbox.cnf;
@@ -98,7 +98,7 @@ function setup_mongodb_sandbox() {
 
 function generate_js_test_config() {
 
-    cat << EOT > "$(dirname $0)/js_test_config.json"
+    cat << EOT > "${BASEDIR}/js_test_config.json"
 {
     "dataDir": "${WORKDIR}/data",
     "schema": "test",
@@ -113,5 +113,4 @@ function generate_js_test_config() {
 
 EOT
 
-    [[ -f "$(dirname $0)/js_test_config.json" ]] || echo "$(dirname $0)/js_test_config.json not created";
 }

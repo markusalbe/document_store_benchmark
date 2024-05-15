@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source "$(dirname $0)/benchmark.env.sh";
+source "$(dirname $(readlink -f $0))/benchmark.env.sh";
 
 function ts() { date --utc --iso-8601=s; }
 function echo_red() { echo -e "\033[31m${1}\033[0m"; }

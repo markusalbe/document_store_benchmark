@@ -1,6 +1,7 @@
 #!/bin/bash
 
-export WORKDIR="$(dirname $0)/benchmark";
+export BASEDIR="$(dirname $(readlink -f $0))";
+export WORKDIR="${BASEDIR}/benchmark";
 export DATADIR="${WORKDIR}/data";
 export JSON="${DATADIR}/companies.json";
 

@@ -1,10 +1,11 @@
 #!/bin/bash
 set -e;
 sudo prlimit --nofile=131072 --pid=$$;
-source $(dirname $0)/benchmark.common.sh;
-source $(dirname $0)/benchmark.data.sh;
-source $(dirname $0)/benchmark.db_stats.sh;
-source $(dirname $0)/client_thread_mysql.sh;
+source "$(dirname $(readlink -f $0))/benchmark.env.sh";
+source ${BASEDIR}/benchmark.common.sh;
+source ${BASEDIR}/benchmark.data.sh;
+source ${BASEDIR}/benchmark.db_stats.sh;
+source ${BASEDIR}/client_thread_mysql.sh;
 
 # create the datadir (and it's parent dir if it doesn't exist)
 [[ -d "${WORKDIR}" ]] || mkdir -pv "${WORKDIR}";
@@ -106,7 +107,7 @@ function run_loops() {
     } done
 }
 
-benchmark_config=${1:-"$(dirname $0)/benchmark.conf"};
+benchmark_config=${1:-"${BASEDIR}/benchmark.conf"};
 source "${benchmark_config}";
 
 echo -e "$(repeat '=' 80)\n[$(ts)] Starting test with params from ${benchmark_config}; Logging to ${TEST_LOG}\n" |tee -a "${TEST_LOG}";
