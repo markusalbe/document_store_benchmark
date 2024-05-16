@@ -99,6 +99,9 @@ function setup_mongodb_sandbox() {
 
 function generate_js_test_config() {
 
+    # we have no valid env file when this runs.
+    export MYSQL_SANDBOX_DIR=$(eval echo "$(dbdeployer defaults show | tail -n +2 | jq -r '.["sandbox-home"]')/$(dbdeployer sandboxes --latest | awk '{print $1}')" );
+
     cat << EOT > "${BASEDIR}/js_test_config.json"
 {
     "dataDir": "${WORKDIR}/data",
