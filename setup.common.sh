@@ -64,10 +64,11 @@ function setup_group_replication_sandbox() {
 
     mkdir -p ${HOME}/opt/mysql;
     cd $_;
-    wget -c https://downloads.percona.com/downloads/Percona-Server-8.0/Percona-Server-8.0.33-25/binary/tarball/Percona-Server-8.0.33-25-Linux.x86_64.glibc2.17.tar.gz;
-    tar xzf Percona-Server-8.0.33-25-Linux.x86_64.glibc2.17.tar.gz;
+    # wget -c https://downloads.percona.com/downloads/Percona-Server-8.0/Percona-Server-8.0.33-25/binary/tarball/Percona-Server-8.0.33-25-Linux.x86_64.glibc2.17.tar.gz;
+    wget -c https://downloads.percona.com/downloads/Percona-Server-8.0/Percona-Server-8.0.33-25/binary/tarball/Percona-Server-8.0.33-25-Linux.x86_64.glibc2.17-minimal.tar.gz;
+    tar xzf Percona-Server-8.0.33-25-Linux.x86_64.glibc2.17-minimal.tar.gz;
 
-    mv Percona-Server-8.0.33-25-Linux.x86_64.glibc2.17 8.0.33;
+    mv Percona-Server-8.0.33-25-Linux.x86_64.glibc2.17-minimal 8.0.33;
     dbdeployer deploy replication --topology=group ./8.0.33;
 
     # the one we get from .env file ain't properly defined, as no sandbox was deployed when the file is sourced in this setup script.
