@@ -105,7 +105,7 @@ function extract_and_split_lookup_conditions_using_symlinks() {
     # mkdir -vp "$(get_lookup_chunks_datadir 'mongodb')/sk_lookup";
     mkdir -vp "$(get_lookup_chunks_datadir 'mongodb')/pk_lookup";
 
-    # mkdir -vp "$(get_lookup_chunks_datadir 'xcom')/sk_lookup";
+    mkdir -vp "$(get_lookup_chunks_datadir 'xcom')/";
     # mkdir -vp "$(get_lookup_chunks_datadir 'xcom')/pk_lookup";
 
 
