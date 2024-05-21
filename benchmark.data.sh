@@ -102,11 +102,11 @@ function extract_and_split_lookup_conditions_using_symlinks() {
     mkdir -vp "$(get_lookup_chunks_datadir 'mysql')/pk_lookup";
     mkdir -vp "$(get_lookup_chunks_datadir 'mysql')/sk_lookup"
 
-    mkdir -vp "$(get_lookup_chunks_datadir 'mongodb')/sk_lookup";
+    # mkdir -vp "$(get_lookup_chunks_datadir 'mongodb')/sk_lookup";
     mkdir -vp "$(get_lookup_chunks_datadir 'mongodb')/pk_lookup";
 
-    mkdir -vp "$(get_lookup_chunks_datadir 'xcom')/sk_lookup";
-    mkdir -vp "$(get_lookup_chunks_datadir 'xcom')/pk_lookup";
+    # mkdir -vp "$(get_lookup_chunks_datadir 'xcom')/sk_lookup";
+    # mkdir -vp "$(get_lookup_chunks_datadir 'xcom')/pk_lookup";
 
 
     extract_pk "mysql" "$(get_lookup_chunks_datadir 'mysql')/pk_lookup.master";   
@@ -137,7 +137,7 @@ function extract_and_split_lookup_conditions_using_symlinks() {
     } done
 
     # symlink mongodb as xcom for PK conditions
-    ln -vfs "$(get_lookup_chunks_datadir 'mongodb' 'pk_lookup')" "$(get_lookup_chunks_datadir  'xcom' 'pk_lookup')";
+    ln -vfs "$(get_lookup_chunks_datadir 'mongodb' 'pk_lookup')/" "$(get_lookup_chunks_datadir  'xcom' 'pk_lookup')/";
 
     # symlink mysql as mongodb and xcom for SK conditions
     ln -vfs "$(get_lookup_chunks_datadir 'mysql' 'sk_lookup')" "$(get_lookup_chunks_datadir 'xcom' 'sk_lookup')";
