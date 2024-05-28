@@ -47,6 +47,7 @@ function generate_main_json() {
     
     cat ${target}.tmp.* | sed -E 's/:\{"\$oid"//g; s/"\}(,"firm":)/"\1/g'  > "${target}";
     rm -vf ${target}.tmp.*;
+    head -n1 "${target}" > "${DATADIR}/singleDocumentSample.json";
     echo_green "[$(ts)] Done preparing main JSON file";
 }
 
@@ -142,6 +143,8 @@ function extract_and_split_lookup_conditions_using_symlinks() {
     # symlink mysql as mongodb and xcom for SK conditions
     ln -vfs "$(get_lookup_chunks_datadir 'mysql' 'sk_lookup')" "$(get_lookup_chunks_datadir 'xcom' 'sk_lookup')";
     ln -vfs "$(get_lookup_chunks_datadir 'mysql' 'sk_lookup')" "$(get_lookup_chunks_datadir 'mongodb' 'sk_lookup')";
+
+    tree -d ${DATADIR};
 }
 
 
