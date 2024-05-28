@@ -66,6 +66,14 @@ function setup_mongodb_sandbox() {
     mlaunch init --replicaset --nodes=3 --binarypath ${HOME}/opt/mongodb/5.0.22/bin/ --dir ${MONGODB_SANDBOX_DIR};
 }
 
+function install_mongo_clients() {
+    mkdir /opt/mongosh;
+    cd $_;
+    wget -c https://downloads.mongodb.com/compass/mongosh-2.1.1-linux-x64.tgz;
+    tar xzf mongosh-2.1.1-linux-x64.tgz;
+    mv mongosh-2.1.1-linux-x64 2.1.1;
+}
+
 function generate_js_test_config() {
 
     # we have no valid env file when this runs.

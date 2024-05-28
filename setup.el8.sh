@@ -10,17 +10,6 @@ function install_linux_tooling() {
     rpm -Uvh http://mirror.centos.org/centos/8-stream/AppStream/x86_64/os/Packages/jq-1.6-3.el8.x86_64.rpm;
 }
 
-function install_mongo_clients() {
-    mkdir /opt/mongosh;
-    cd $_;
-    wget -c https://downloads.mongodb.com/compass/mongosh-2.1.1-linux-x64.tgz;
-    tar xzf mongosh-2.1.1-linux-x64.tgz;
-    mv mongosh-2.1.1-linux-x64 2.1.1;
-
-    percona-release setup psmdb42;
-    yes | yum install -y percona-server-mongodb-shell-4.2.14-15.el8.x86_64;
-}
-
 function install_mgenerate() {
     yes | dnf module reset nodejs;
     yes | dnf module install nodejs:12;
