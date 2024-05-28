@@ -37,7 +37,7 @@ function setup_group_replication_sandbox() {
     tar xzf Percona-Server-8.0.33-25-Linux.x86_64.glibc2.17-minimal.tar.gz;
 
     mv Percona-Server-8.0.33-25-Linux.x86_64.glibc2.17-minimal 8.0.33;
-    dbdeployer deploy replication --topology=group ./8.0.33;
+    dbdeployer deploy replication --topology=group 8.0.33;
 
     # the one we get from .env file ain't properly defined, as no sandbox was deployed when the file is sourced in this setup script.
     export MYSQL_SANDBOX_DIR=$(eval echo "$(dbdeployer defaults show | tail -n +2 | jq -r '.["sandbox-home"]')/$(dbdeployer sandboxes --latest | awk '{print $1}')" );
