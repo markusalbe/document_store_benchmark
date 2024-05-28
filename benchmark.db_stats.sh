@@ -112,3 +112,11 @@ function check_rows_count_mongodb() {
     ${MONGOSH} --eval 'db.companies.countDocuments()';
 }
 
+function pmm_annotate() {
+    local protocol=${1};
+    local test_type=${2};
+    local test_mode=${3};
+    local threads=${4};
+    local batch_size=${5};    
+    sudo /usr/sbin/pmm-admin annotate --server-url=https://admin:admin@127.0.0.1:443/ --server-insecure-tls --tags="${protocol},${test_type}_${test_mode},thds_${threads},batch_${batch_size}" "${protocol}/${test_type}_${test_mode} #thds_${threads} #batch_${batch_size}";
+}

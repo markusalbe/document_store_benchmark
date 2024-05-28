@@ -193,6 +193,7 @@ function run_test() {
 
     local t0=$(date +%s.%N);
     save_db_stats "${protocol}" "${test_id}" "t0";
+    pmm_annotate "${protocol}" "${test_type}" "${test_mode}" ${threads} ${batch_size};
     
     for thread in $(seq 1 ${threads}); do {
         echo_green "[$(ts)] Starting thread ${thread}/${threads} (${test_id})";
@@ -219,7 +220,6 @@ function run_test() {
 
     save_db_stats "${protocol}" "${test_id}" "t1";
     show_test_db_stats "${protocol}" "${test_id}";
-
 }
 
 function run_loops() {
@@ -241,7 +241,6 @@ function run_loops() {
             for protocol in ${arr_protocols[@]}; do {
                 for threads in ${arr_threads[@]}; do {
                     for batch_size in ${arr_batch_sizes[@]}; do {
-
                         recreate_test_env "$(get_test_id ${protocol} "insert" ${test_mode} ${threads} ${total_rows} ${batch_size} 0)" "${protocol}" >> "${TEST_LOG}" 2>&1;
 
                         for commit_frequency in ${arr_commit_frequencies[@]}; do {
