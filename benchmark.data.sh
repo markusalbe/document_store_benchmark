@@ -47,8 +47,8 @@ function generate_main_json() {
     
     cat ${target}.tmp.* | sed -E 's/:\{"\$oid"//g; s/"\}(,"firm":)/"\1/g'  > "${target}";
     rm -vf ${target}.tmp.*;
-    head -n1 "${target}" > "${DATADIR}/singleDocumentSample.json";
-    echo_green "[$(ts)] Done preparing main JSON file";
+    head -n1 "${target}" |sed -E 's/"_id":"[0-9a-z]{25}"/"_id":"111111111111111111111111"/g' > "${DATADIR}/singleDocumentSample.json";
+    echo_green "[$(ts)] Done preparing main JSON file";         
 }
 
 function cleanup_data_files() {
